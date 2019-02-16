@@ -14,6 +14,11 @@ module rca_16b(A, B, C_in, S, C_out);
     output [N-1:0] S;
     output         C_out;
 
-    // YOUR CODE HERE
+    wire C_itm_1, C_itm_2, C_itm_3;
+    
+    rca_4b b_0_3 (.A(A[3:0]), .B(B[3:0]), .C_in(C_in), .S(S[3:0]), .C_out(C_itm_1));
+    rca_4b b_4_7 (.A(A[7:4]), .B(B[7:4]), .C_in(C_itm_1), .S(S[7:4]), .C_out(C_itm_2));
+    rca_4b b_8_11 (.A(A[11:8]), .B(B[11:8]), .C_in(C_itm_2), .S(S[11:8]), .C_out(C_itm_3));
+    rca_4b b_12_15 (.A(A[15:12]), .B(B[15:12]), .C_in(C_itm_3), .S(S[15:12]), .C_out(C_out));
 
 endmodule
