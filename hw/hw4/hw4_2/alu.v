@@ -28,5 +28,36 @@ module alu (A, B, Cin, Op, invA, invB, sign, Out, Zero, Ofl);
    output         Zero;
 
    /* YOUR CODE HERE */
-    
+   
+   wire [N-1:0] A_out;
+   wire [N-1:0] B_out;
+   wire [N-1:0] xor_out;
+   wire [N-1:0] or_out;
+   wire [N-1:0] and_out;
+   wire [N-1:0] add_out;
+   wire [N-1:0] barrel_out;
+   wire Cout;
+   
+   always_comb@
+      case(Op)
+         3'b7: Out = xor_out;
+         3'b6: Out = or_out;
+         3'b5: Out = and_out;
+         3'b4: Out = add_out;
+         default : Out = barrel_out;
+      endcase
+      
+   assign A_out = {N{invA}} ^ A;
+   assign B_out = {N{invB}} ^ B;
+   
+   assign xor_out = A_out ^ B_out;
+   assign or_out = A_out | B_out;
+   assign and_out = A_out & B_out;
+   
+   assign Zero = ~(|Out);
+   assign OFL = sign ? (A_out[15] & B_out[15] & ~Out[15]) | (~A_out[15] & ~B_out[15] & Out[15]) : Cout;
+   
+   rca_16b add_mod (.A(A_out), .B(B_out), .C_in(Cin), .S(add_out), .C_out(Cout));
+   barrelShifter barrel_mod(.In(A_out), .Cnt(B_out[3:0]), .Op(Op[2:0]), .Out(barrel_out));
+   
 endmodule
