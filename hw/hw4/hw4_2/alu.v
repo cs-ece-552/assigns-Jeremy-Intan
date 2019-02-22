@@ -38,14 +38,7 @@ module alu (A, B, Cin, Op, invA, invB, sign, Out, Zero, Ofl);
    wire [N-1:0] barrel_out;
    wire Cout;
    
-   always_comb@
-      case(Op)
-         3'b7: Out = xor_out;
-         3'b6: Out = or_out;
-         3'b5: Out = and_out;
-         3'b4: Out = add_out;
-         default : Out = barrel_out;
-      endcase
+   assign Out = Op[2] ? (Op[1] ? (Op[0] ? xor_out : or_out) : (Op[0] ? and_out : add_out)) : barrel_out;
       
    assign A_out = {N{invA}} ^ A;
    assign B_out = {N{invB}} ^ B;
